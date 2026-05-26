@@ -86,7 +86,7 @@ Users can select the Spitfire shell from their user config (`Y` key), or you can
 
 Developed by **Xbit** / [x-bit.org](https://x-bit.org)  
 Co-authored with Claude Sonnet 4.6  
-Tested on Unix-Bit BBS and 32-Bit BBS
+Tested on Unix-Bit BBS and X-Bit BBS
 
 Inspired by the original Spitfire BBS by Buffalo Creek Software.
 
