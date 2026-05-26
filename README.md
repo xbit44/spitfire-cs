@@ -79,9 +79,9 @@ Users can select the Spitfire shell from their user config (`Y` key), or you can
 
 ## Credits
 
-Developed by **Xbit** / [x-bit.org](https://x-bit.org)  
+Developed by **xbit** / [x-bit.org](https://x-bit.org/info)  
 Co-authored with Claude Sonnet 4.6  
-Tested on Unix-Bit BBS and 32-Bit BBS  
+Tested on X-Bit BBS and Unix-Bit BBS  
 Thanks to Digital Man for `bbs.menu_dir` guidance
 
 Inspired by the original Spitfire BBS by Buffalo Creek Software.
@@ -90,4 +90,4 @@ Inspired by the original Spitfire BBS by Buffalo Creek Software.
 
 - [Synchronet BBS](https://synchro.net)
 - [Synchronet Wiki - Command Shells](https://wiki.synchro.net/custom:command_shell)
-- [x-bit.org BBS Network](https://x-bit.org)
+- [x-bit.org BBS Network](https://x-bit.org/info)
