@@ -1,6 +1,6 @@
 // Spitfire BBS Command Shell for Synchronet
 // Inspired by the Spitfire BBS interface
-// 
+// Developed for Unix-Bit BBS / x-bit.org
 //
 // Co-authored-by: Claude Sonnet 4.6 <claude@anthropic.com>
 //
@@ -8,8 +8,9 @@
 //   main.msg  - Main menu
 //   msg.msg   - Message menu
 //   file.msg  - File menu
-//   qwk.msg   - QWK menu       (displayed by bbs.qwk_sec() internally)
-//   mail.msg  - Email menu     (displayed by bbs.email_sec() internally)
+//   chat.msg  - Chat menu
+//   mail.msg  - E-Mail/NetMail menu
+//   qwk.msg   - QWK menu
 //
 // Register in SCFG -> Command Shells:
 //   Name:          Spitfire
@@ -32,6 +33,9 @@ shell.help_key = '?';
 // Time display: used if unlimited time exemption, remaining otherwise
 const time_code = user.security.exemptions & UFLAG_T ? "@TUSED@" : "@TLEFT@";
 
+// All shell menus live in text/menu/spitfire/
+bbs.menu_dir = "spitfire";
+
 // ── Prompt builder ───────────────────────────────────────────────────────────
 
 function sf_prompt(section) {
@@ -40,197 +44,35 @@ function sf_prompt(section) {
 		+ " \x01n\x01c[\x01h@GN@\x01n\x01c]: \x01n";
 }
 
-// ── Email section ─────────────────────────────────────────────────────────────
-// Custom loop so we can display spitfire/mail instead of the default e-mail.msg
-
-shell.sf_email_sec = function() {
-	require("sbbsdefs.js", "WM_NONE");
-	require("userdefs.js", "USER_EXPERT");
-	var userprops = bbs.mods.userprops || load(bbs.mods.userprops = {}, "userprops.js");
-
-	while(bbs.online) {
-		if(!(user.settings & USER_EXPERT)) {
-			console.clear();
-			bbs.menu("spitfire/mail");
-		}
-		bbs.nodesync();
-		console.newline();
-		console.print("\x01_\x01y\x01hE-mail: \x01n");
-		var key = console.getkeys("SARUFNKQ?\r", 0, K_UPPER);
-		switch(key) {
-			case 'R':	// Read Mail Sent to You
-			case 'U':	// Read your un-read mail
-			case 'K':	// Read/Kill mail you have sent
-				const MAIL_LM_MODE = LM_REVERSE;
-				var lm_mode = user.mail_settings & MAIL_LM_MODE;
-				if(key == 'U')
-					lm_mode |= LM_UNREAD;
-				var new_lm_mode = bbs.read_mail(key == 'K' ? MAIL_SENT : MAIL_YOUR, user.number, lm_mode) & MAIL_LM_MODE;
-				if(new_lm_mode != (lm_mode & MAIL_LM_MODE)) {
-					if(new_lm_mode & MAIL_LM_MODE)
-						user.mail_settings |= MAIL_LM_MODE;
-					else
-						user.mail_settings &= ~MAIL_LM_MODE;
-				}
-				break;
-			case 'F':	// Feedback to Sysop
-				shell.send_feedback();
-				break;
-			case 'A':	// Send File Attachment
-				shell.send_email(WM_FILE);
-				break;
-			case 'S':	// Send mail to local user
-				shell.send_email();
-				break;
-			case 'N':	// Send NetMail
-				shell.send_netmail();
-				break;
-			case '?':
-				if(user.settings & USER_EXPERT) {
-					console.clear();
-					bbs.menu("spitfire/mail");
-				}
-				break;
-			default:
-				return;	// Q or Enter — back to message menu
-		}
-	}
-}
-
-
-// ── Chat section ──────────────────────────────────────────────────────────────
-// Custom loop so we can display spitfire/chat instead of the default chat.msg
+// ── Section wrappers ─────────────────────────────────────────────────────────
+// Set bbs.menu_dir before each monolithic section call so it finds our
+// Spitfire-styled menus, then reset it immediately after.
 
 shell.sf_chat_sec = function() {
-	require("sbbsdefs.js", 'USER_EXPERT');
-	require("nodedefs.js", 'NODE_CHAT');
+	console.clear();
+	bbs.menu_dir = "spitfire";
+	bbs.chat_sec();
+	bbs.menu_dir = "spitfire";
+};
 
-	var options = load("modopts.js", "chat");
-	if (!options) options = load("modopts.js", "chat_sec");
-	if (!options) options = {};
-	if (options.irc     === undefined) options.irc     = true;
-	if (options.finger  === undefined) options.finger  = true;
-	if (options.imsg    === undefined) options.imsg    = true;
-	if (options.irc_seclevel === undefined) options.irc_seclevel = 90;
+shell.sf_email_sec = function() {
+	console.clear();
+	bbs.menu_dir = "spitfire";
+	bbs.email_sec();
+	bbs.menu_dir = "spitfire";
+};
 
-	var irc_servers  = (options.irc_server  !== undefined) ? options.irc_server.split(',')  : ["irc.synchro.net 6667"];
-	var irc_channels = (options.irc_channel !== undefined) ? options.irc_channel.split(',') : ["#Synchronet"];
-	for (var i in irc_servers)  irc_servers[i]  = irc_servers[i].trim();
-	for (var i in irc_channels) irc_channels[i] = irc_channels[i].trim();
-
-	if (user.security.restrictions & UFLAG_C) {
-		write(bbs.text(bbs.text.R_Chat));
-		return;
-	}
-
-	function on_or_off(on) { return bbs.text(on ? bbs.text.On : bbs.text.Off); }
-
-	chat:
-	while (bbs.online && !console.aborted) {
-		if (!(user.settings & USER_EXPERT)) {
-			console.clear();
-			bbs.menu("spitfire/chat");
-		}
-		bbs.node_action = NODE_CHAT;
-		bbs.nodesync();
-		write(bbs.text(bbs.text.ChatPrompt));
-
-		var keys = "CDJPQST?\r";
-		if (options.imsg   && (options.imsg_requirements   === undefined || user.compare_ars(options.imsg_requirements)))   keys += "I";
-		if (options.irc    && (options.irc_requirements    === undefined || user.compare_ars(options.irc_requirements)))    keys += "R";
-		if (options.finger && (options.finger_requirements === undefined || user.compare_ars(options.finger_requirements))) keys += "F";
-
-		switch (console.getkeys(keys, 0, K_UPPER)) {
-			case 'S':
-				var val = user.chat_settings ^= CHAT_SPLITP;
-				write("\x01n\r\nPrivate split-screen chat is now: \x01h");
-				writeln(on_or_off(val & CHAT_SPLITP));
-				break;
-			case 'A':
-				var val = user.chat_settings ^= CHAT_NOACT;
-				write("\x01n\r\nNode activity alerts are now: \x01h");
-				writeln(on_or_off(!(val & CHAT_NOACT)));
-				system.node_list[bbs.node_num-1].misc ^= NODE_AOFF;
-				break;
-			case 'D':
-				var val = user.chat_settings ^= CHAT_NOPAGE;
-				write("\x01n\r\nUser chat/messaging availability is now: \x01h");
-				writeln(on_or_off(!(val & CHAT_NOPAGE)));
-				system.node_list[bbs.node_num-1].misc ^= NODE_POFF;
-				break;
-			case 'F':
-				writeln("");
-				load("finger.js");
-				break;
-			case 'I':
-				writeln("");
-				load({}, "sbbsimsg.js");
-				break;
-			case 'R':
-			{
-				var server = irc_servers[0];
-				if (irc_servers.length > 1) {
-					for (var i = 0; i < irc_servers.length; i++)
-						console.uselect(i, "IRC Server", irc_servers[i]);
-					var i = console.uselect();
-					if (i < 0) break;
-					server = irc_servers[i];
-				}
-				if (user.security.level >= options.irc_seclevel || user.security.exemptions & UFLAG_C) {
-					write("\r\n\x01n\x01y\x01hIRC Server: ");
-					server = console.getstr(server, 40, K_EDIT|K_LINE|K_AUTODEL);
-					if (console.aborted || server.length < 4) break;
-				}
-				var channel_list = irc_channels;
-				if (options[server] !== undefined) channel_list = options[server].split(',');
-				var channel;
-				if (channel_list.length > 1) {
-					for (var i = 0; i < channel_list.length; i++) {
-						channel_list[i] = channel_list[i].trim();
-						console.uselect(i, "IRC Channel", channel_list[i]);
-					}
-					var i = console.uselect();
-					if (i < 0) break;
-					channel = channel_list[i];
-				} else {
-					write("\r\n\x01n\x01y\x01hIRC Channel: ");
-					channel = console.getstr(channel_list[0], 40, K_EDIT|K_LINE|K_AUTODEL);
-				}
-				if (server.indexOf(' ') < 0) server += " 6667";
-				if (!console.aborted && channel.length) {
-					log("IRC to " + server + " " + channel);
-					bbs.exec("?irc -a " + server + " " + channel);
-				}
-				break;
-			}
-			case 'J':
-				bbs.multinode_chat();
-				break;
-			case 'P':
-				bbs.private_chat();
-				break;
-			case 'C':
-				shell.page_sysop();
-				break;
-			case 'T':
-				bbs.page_guru();
-				break;
-			case '?':
-				if (user.settings & USER_EXPERT) {
-					console.clear();
-					bbs.menu("spitfire/chat");
-				}
-				break;
-			default:
-				break chat;	// Q or Enter — back to main menu
-		}
-	}
+shell.sf_qwk_sec = function() {
+	console.clear();
+	bbs.menu_dir = "spitfire";
+	bbs.qwk_sec();
+	bbs.menu_dir = "spitfire";
 };
 
 // ── MESSAGE MENU ─────────────────────────────────────────────────────────────
 
 shell.msg_menu = {
-	file: "spitfire/msg",
+	file: "msg",
 	cls: true,
 	eval: 'bbs.main_cmds++',
 	node_action: NODE_MAIN,
@@ -243,7 +85,7 @@ shell.msg_menu = {
 		'L':  { eval: 'bbs.list_msgs()' },                         // List/View Messages
 		'R':  { eval: 'bbs.scan_msgs()' },                         // Read Message Prompt
 		'J':  { eval: 'select_msg_area()' },                       // Jump to new MSG Area
-		'K':  { eval: 'bbs.qwk_sec()' },                          // QWK Menu
+		'K':  { eval: 'sf_qwk_sec()' },                           // QWK Menu
 		'E':  { eval: 'sf_email_sec()' },                         // E-Mail/NetMail Menu
 		'A':  { eval: 'bbs.auto_msg()' },                          // Logon Auto-Message
 		'P':  { eval: 'bbs.post_msg()' },                          // Post Message
@@ -255,8 +97,8 @@ shell.msg_menu = {
 		        msg: '\r\n\x01c\x01hScan for Messages Posted to You\x01n\r\n' },
 		'*':  { eval: 'show_subs(bbs.curgrp)' },                   // List Sub-Boards
 		'/*': { eval: 'show_grps()' },                             // List Groups
-		'O':  { eval: 'logoff(false)' },                           // Log Off
-		'/O': { eval: 'logoff(true)' },                            // Quick Log Off
+		'O':  { eval: 'bbs.menu_dir=""; logoff(false)' },                           // Log Off
+		'/O': { eval: 'bbs.menu_dir=""; logoff(true)' },                            // Quick Log Off
 		'!':  { eval: 'bbs.menu("sysmain")',
 		        ars: 'SYSOP or EXEMPT Q or I or N' },
 	},
@@ -285,7 +127,7 @@ shell.msg_menu.nav[KEY_LEFT]  = { eval: 'grp_down()' };
 // ── MAIN MENU ────────────────────────────────────────────────────────────────
 
 shell.main_menu = {
-	file: "spitfire/main",
+	file: "main",
 	cls: true,
 	eval: 'bbs.main_cmds++',
 	node_action: NODE_MAIN,
@@ -298,7 +140,7 @@ shell.main_menu = {
 		'D':  { eval: 'bbs.xtrn_sec()' },                          // Door Section
 		'B':  { exec: 'bullseye.js' },                              // Bulletins
 		'G':  { eval: 'bbs.text_sec()' },                          // Text File Section
-		'C':  { eval: 'sf_chat_sec()' },                          // Chat Menu
+		'C':  { eval: 'sf_chat_sec()' },                           // Chat Menu
 		'U':  { eval: 'list_users()' },                            // User List
 		'Y':  { eval: 'bbs.user_config(); exit()' },               // Your Config
 		'I':  { eval: 'main_info()' },                             // Information
@@ -306,8 +148,8 @@ shell.main_menu = {
 		        ars: 'ANSI and not GUEST',
 		        err: '\r\n\x01c\x01hSorry, only regular users with ANSI terminals can do that.\x01n\r\n' },
 		'/L': { eval: 'bbs.list_nodes()' },                        // Node Activity
-		'O':  { eval: 'logoff(false)' },                           // Logoff BBS
-		'/O': { eval: 'logoff(true)' },                            // Quick Logoff
+		'O':  { eval: 'bbs.menu_dir=""; logoff(false)' },                           // Logoff BBS
+		'/O': { eval: 'bbs.menu_dir=""; logoff(true)' },                            // Quick Logoff
 		'!':  { eval: 'bbs.menu("sysmain")',                       // Sysop menu
 		        ars: 'SYSOP or EXEMPT Q or I or N' },
 	},
@@ -338,7 +180,7 @@ if (typeof bbs.email_sec != 'function')
 // ── FILE MENU ────────────────────────────────────────────────────────────────
 
 shell.file_menu = {
-	file: "spitfire/file",
+	file: "file",
 	cls: true,
 	eval: 'bbs.file_cmds++',
 	node_action: NODE_XFER,
@@ -381,10 +223,10 @@ shell.file_menu = {
 		'I':  { eval: 'file_info()' },                             // Information
 		'V':  { eval: 'view_files()',                              // View File Contents
 		        msg: '\r\n\x01c\x01hView File(s)\x01n\r\n' },
-		'C':  { eval: 'sf_chat_sec()' },                          // Chat Menu
+		'C':  { eval: 'sf_chat_sec()' },                           // Chat Menu
 		'/L': { eval: 'bbs.list_nodes()' },                        // Node Activity
-		'O':  { eval: 'logoff(false)' },                           // Logoff BBS
-		'/O': { eval: 'logoff(true)' },                            // Quick Logoff
+		'O':  { eval: 'bbs.menu_dir=""; logoff(false)' },                           // Logoff BBS
+		'/O': { eval: 'bbs.menu_dir=""; logoff(true)' },                            // Quick Logoff
 		'!':  { eval: 'bbs.menu("sysxfer")', ars: 'SYSOP' },
 	},
 	nav: {
