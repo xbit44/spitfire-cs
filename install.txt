@@ -35,15 +35,8 @@ Installation - Windows
   3. Copy all .msg files to \sbbs\text\menu\spitfire\
 
   4. In SCFG -> Command Shells -> Add new entry:
-       Name:          Spitfire
+       Name:          Spitfire Clone
        Internal Code: SPITFIRE
-
-  5. Recycle the Terminal Server or restart Synchronet.
-
-  6. In SCFG -> Nodes (or User defaults), set the
-     command shell to SPITFIRE, or let users choose
-     it from their user config (Y key).
-
 
 Installation - Linux
 --------------------
@@ -55,15 +48,8 @@ Installation - Linux
      Note: filenames must be lowercase (they already are).
 
   4. In SCFG -> Command Shells -> Add new entry:
-       Name:          Spitfire
+       Name:          Spitfire Clone
        Internal Code: SPITFIRE
-
-  5. Recycle the Terminal Server or restart Synchronet.
-
-  6. In SCFG -> Nodes (or User defaults), set the
-     command shell to SPITFIRE, or let users choose
-     it from their user config (Y key).
-
 
 Notes
 -----
