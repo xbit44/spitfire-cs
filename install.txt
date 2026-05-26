@@ -1,0 +1,84 @@
+========================================
+ Spitfire Shell v1.0 for Synchronet BBS
+ Authored by Xbit / x-bit.org
+ Co-authored with Claude Sonnet 4.6
+========================================
+
+Overview
+--------
+A Spitfire BBS-inspired command shell for Synchronet. Recreates
+the classic Spitfire look and feel with authentic SF-styled ANSI
+menus while using the full Synchronet command set underneath.
+
+Sections: Main / Message / File / Chat / E-Mail/NetMail
+Note: QWK uses the default Synchronet menu display.
+
+
+Files Included
+--------------
+  spitfire.js       Command shell (goes in exec/)
+  main.msg          Main menu display
+  msg.msg           Message menu display
+  file.msg          File menu display
+  chat.msg          Chat menu display
+  mail.msg          E-Mail/NetMail menu display
+  qwk.msg           QWK menu display (not working)
+  install.txt       This file
+  file_id.diz       Package description
+
+
+Installation - Windows
+----------------------
+  1. Copy spitfire.js to \sbbs\exec\
+
+  2. Create the folder \sbbs\text\menu\spitfire\
+
+  3. Copy all .msg files to \sbbs\text\menu\spitfire\
+
+  4. In SCFG -> Command Shells -> Add new entry:
+       Name:          Spitfire
+       Internal Code: SPITFIRE
+
+  5. Recycle the Terminal Server or restart Synchronet.
+
+  6. In SCFG -> Nodes (or User defaults), set the
+     command shell to SPITFIRE, or let users choose
+     it from their user config (Y key).
+
+
+Installation - Linux
+--------------------
+  1. Copy spitfire.js to /sbbs/exec/
+
+  2. Create the folder /sbbs/text/menu/spitfire/
+
+  3. Copy all .msg files to /sbbs/text/menu/spitfire/
+     Note: filenames must be lowercase (they are).
+
+  4. In SCFG -> Command Shells -> Add new entry:
+       Name:          Spitfire
+       Internal Code: SPITFIRE
+
+  5. Recycle the Terminal Server or restart Synchronet.
+
+  6. In SCFG -> Nodes (or User defaults), set the
+     command shell to SPITFIRE, or let users choose
+     it from their user config (Y key).
+
+
+Notes
+-----
+  - The Bulletins option (B) requires bullseye.js to be
+    present in your exec/ directory.
+
+  - The QWK menu displays the default Synchronet QWK
+    menu as that section is monolithic and cannot be
+    overridden by a custom menu file.
+
+  - Chat, E-Mail, and all other sections use custom
+    display loops and will show the Spitfire-styled
+    menus from the spitfire/ folder.
+
+Version History
+---------------
+  v1.0  2026-05-26  Initial release
