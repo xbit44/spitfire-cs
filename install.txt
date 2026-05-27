@@ -1,5 +1,5 @@
 ========================================
- Spitfire Shell v1.1 for Synchronet BBS
+ Spitfire Shell v1.2a for Synchronet BBS
  Authored by Xbit / x-bit.org
  Co-authored with Claude Sonnet 4.6
 ========================================
@@ -35,8 +35,9 @@ Installation - Windows
   3. Copy all .msg files to \sbbs\text\menu\spitfire\
 
   4. In SCFG -> Command Shells -> Add new entry:
-       Name:          Spitfire Clone
+       Name:          Spitfire
        Internal Code: SPITFIRE
+
 
 Installation - Linux
 --------------------
@@ -48,8 +49,9 @@ Installation - Linux
      Note: filenames must be lowercase (they already are).
 
   4. In SCFG -> Command Shells -> Add new entry:
-       Name:          Spitfire Clone
+       Name:          Spitfire
        Internal Code: SPITFIRE
+
 
 Notes
 -----
@@ -62,8 +64,12 @@ Notes
 
 Version History
 ---------------
-  v1.1  2026-05-26  Rewrote using bbs.menu_dir per Digital Man feedback.
-                    Removed custom section loops, simplified code.
-                    All sections now display SF menus including QWK.
-                    Fixed logoff menu_dir reset.
+  v1.2a 2026-05-27  Bug fixes: menu_dir handling for all sections
+                    (Doors, Text Files, Batch, Temp Xfer, Info,
+                    File Scan Config, Main Info). Fixed logoff
+                    returning to default shell. Fixed e-mail.msg
+                    not found error.
+  v1.1  2026-05-26  Rewrote using bbs.menu_dir per Digital Man
+                    feedback. Removed custom section loops.
+                    All sections now display SF menus.
   v1.0  2026-05-26  Initial release
