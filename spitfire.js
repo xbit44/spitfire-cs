@@ -171,7 +171,7 @@ shell.main_menu = {
 		'C':  { eval: 'sf_chat_sec()' },                           // Chat Menu
 		'U':  { eval: 'list_users()' },                            // User List
 		'Y':  { eval: 'bbs.menu_dir=""; bbs.user_config(); exit()' }, // Your Config
-		'I':  { eval: 'main_info()' },                             // Information
+		'I':  { eval: 'bbs.menu_dir=""; main_info(); bbs.menu_dir="spitfire"' }, // Information
 		'/A': { exec: 'avatar_chooser.js',                         // Change your Avatar
 		        ars: 'ANSI and not GUEST',
 		        err: '\r\n\x01c\x01hSorry, only regular users with ANSI terminals can do that.\x01n\r\n' },
