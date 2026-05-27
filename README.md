@@ -4,6 +4,9 @@ A Spitfire BBS-inspired command shell for [Synchronet BBS](https://synchro.net),
 
 ![Spitfire Shell Screenshot](spitfire-cc.png)
 
+> ⚠️ **Work in Progress — Pre-release**  
+> This shell is functional but still under active development. Some sub-menu displays (multchat, logoff) have known issues pending resolution. Recommended for sysop testing only at this time. Feedback and bug reports welcome!
+
 ## Features
 
 - Spitfire BBS-styled ANSI menus for all sections including Chat, E-Mail, and QWK
@@ -41,6 +44,7 @@ A Spitfire BBS-inspired command shell for [Synchronet BBS](https://synchro.net),
 4. In SCFG → Command Shells → Add new entry:
    - Name: `Spitfire`
    - Internal Code: `SPITFIRE`
+5. Recycle the Terminal Server or restart Synchronet
 
 ### Linux
 
@@ -51,6 +55,7 @@ A Spitfire BBS-inspired command shell for [Synchronet BBS](https://synchro.net),
 4. In SCFG → Command Shells → Add new entry:
    - Name: `Spitfire`
    - Internal Code: `SPITFIRE`
+5. Recycle the Terminal Server or restart Synchronet
 
 ### Assigning the Shell
 
@@ -72,7 +77,6 @@ Users can select the Spitfire shell from their user config (`Y` key), or you can
 
 | Version | Date | Notes |
 |---|---|---|
-| 1.2a | 2026-05-27 | Bug fixes: menu_dir handling for Doors, Text Files, Batch, Temp Xfer, Info, File Scan Config. Fixed logoff returning to default shell. |
 | 1.1 | 2026-05-26 | Rewrote using bbs.menu_dir per Digital Man feedback. All sections now display SF menus including QWK. |
 | 1.0 | 2026-05-26 | Initial release |
 
@@ -84,6 +88,8 @@ Tested on X-Bit BBS and Unix-Bit BBS
 Thanks to Digital Man for `bbs.menu_dir` guidance
 
 Inspired by the original Spitfire BBS by Buffalo Creek Software.
+
+A big thank you to the sysops and BBS community members who have helped test and provide feedback during development — your input is what makes this better!
 
 ## See Also
 
