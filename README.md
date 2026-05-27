@@ -41,7 +41,6 @@ A Spitfire BBS-inspired command shell for [Synchronet BBS](https://synchro.net),
 4. In SCFG → Command Shells → Add new entry:
    - Name: `Spitfire`
    - Internal Code: `SPITFIRE`
-5. Recycle the Terminal Server or restart Synchronet
 
 ### Linux
 
@@ -52,7 +51,6 @@ A Spitfire BBS-inspired command shell for [Synchronet BBS](https://synchro.net),
 4. In SCFG → Command Shells → Add new entry:
    - Name: `Spitfire`
    - Internal Code: `SPITFIRE`
-5. Recycle the Terminal Server or restart Synchronet
 
 ### Assigning the Shell
 
@@ -74,12 +72,13 @@ Users can select the Spitfire shell from their user config (`Y` key), or you can
 
 | Version | Date | Notes |
 |---|---|---|
+| 1.2a | 2026-05-27 | Bug fixes: menu_dir handling for Doors, Text Files, Batch, Temp Xfer, Info, File Scan Config. Fixed logoff returning to default shell. |
 | 1.1 | 2026-05-26 | Rewrote using bbs.menu_dir per Digital Man feedback. All sections now display SF menus including QWK. |
 | 1.0 | 2026-05-26 | Initial release |
 
 ## Credits
 
-Developed by **xbit** / [x-bit.org](https://x-bit.org/info)  
+Developed by **Xbit** / [x-bit.org](https://x-bit.org/info)  
 Co-authored with Claude Sonnet 4.6  
 Tested on X-Bit BBS and Unix-Bit BBS  
 Thanks to Digital Man for `bbs.menu_dir` guidance
