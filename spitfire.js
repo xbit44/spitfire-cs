@@ -247,8 +247,8 @@ shell.file_menu = {
 		'T':  { eval: 'sf_temp_xfer()' },                        // Temp Dir/Archive cmds
 		'R':  { eval: 'view_file_info(FI_REMOVE)',                 // Remove/Edit File
 		        msg: '\r\n\x01c\x01hRemove/Edit File(s)\x01n\r\n' },
-		'&':  { exec: 'filescancfg.js' },                          // File Scan Config
-		'I':  { eval: 'file_info()' },                             // Information
+		'&':  { eval: 'bbs.menu_dir=""; js.exec(system.exec_dir+"filescancfg.js",{}); bbs.menu_dir="spitfire"' }, // File Scan Config
+		'I':  { eval: 'bbs.menu_dir=""; file_info(); bbs.menu_dir="spitfire"' }, // Information
 		'V':  { eval: 'view_files()',                              // View File Contents
 		        msg: '\r\n\x01c\x01hView File(s)\x01n\r\n' },
 		'C':  { eval: 'sf_chat_sec()' },                           // Chat Menu
