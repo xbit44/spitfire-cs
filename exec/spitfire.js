@@ -5,12 +5,12 @@
 // Co-authored-by: Claude Sonnet 4.6 <claude@anthropic.com>
 //
 // Menu files go in: sbbs/text/menu/spitfire/
-//   main.msg  - Main menu
-//   msg.msg   - Message menu
-//   file.msg  - File menu
-//   chat.msg  - Chat menu
-//   mail.msg  - E-Mail/NetMail menu
-//   qwk.msg   - QWK menu
+//   main.msg   - Main menu
+//   msg.msg    - Message menu
+//   file.msg   - File menu
+//   chat.msg   - Chat menu
+//   e-mail.msg - E-Mail/NetMail menu
+//   qwk.msg    - QWK menu
 //
 // Register in SCFG -> Command Shells:
 //   Name:          Spitfire
@@ -33,9 +33,6 @@ shell.help_key = '?';
 // Time display: used if unlimited time exemption, remaining otherwise
 const time_code = user.security.exemptions & UFLAG_T ? "@TUSED@" : "@TLEFT@";
 
-// All shell menus live in text/menu/spitfire/
-bbs.menu_dir = "spitfire";
-
 // ── Prompt builder ───────────────────────────────────────────────────────────
 
 function sf_prompt(section) {
@@ -45,94 +42,93 @@ function sf_prompt(section) {
 }
 
 // ── Section wrappers ─────────────────────────────────────────────────────────
-// Set bbs.menu_dir before each monolithic section call so it finds our
-// Spitfire-styled menus, then reset it immediately after.
+// Per Digital Man: set/reset bbs.menu_dir only around captured section calls
+// that have their own custom menu files in the spitfire/ subfolder.
+// Direct bbs.menu() calls use the full path (e.g. "spitfire/main") instead.
+// bbs.chat_sec() is called without menu_dir so its internal menus (multchat
+// etc.) resolve from the default text/menu/ location.
 
 shell.sf_chat_sec = function() {
 	console.clear();
 	bbs.menu_dir = "spitfire";
 	bbs.chat_sec();
-	bbs.menu_dir = "spitfire";
+	bbs.menu_dir = "";
 };
 
 shell.sf_email_sec = function() {
 	console.clear();
 	bbs.menu_dir = "spitfire";
 	bbs.email_sec();
-	bbs.menu_dir = "spitfire";
+	bbs.menu_dir = "";
 };
 
 shell.sf_qwk_sec = function() {
 	console.clear();
 	bbs.menu_dir = "spitfire";
 	bbs.qwk_sec();
-	bbs.menu_dir = "spitfire";
-};
-
-shell.sf_temp_xfer = function() {
-	console.clear();
 	bbs.menu_dir = "";
-	bbs.temp_xfer();
-	bbs.menu_dir = "spitfire";
-};
-
-shell.sf_batch_menu = function() {
-	console.clear();
-	bbs.menu_dir = "";
-	bbs.batch_menu();
-	bbs.menu_dir = "spitfire";
-};
-
-shell.sf_text_sec = function() {
-	console.clear();
-	bbs.menu_dir = "";
-	bbs.text_sec();
-	bbs.menu_dir = "spitfire";
 };
 
 shell.sf_xtrn_sec = function() {
 	console.clear();
 	bbs.menu_dir = "";
 	bbs.xtrn_sec();
-	bbs.menu_dir = "spitfire";
+};
+
+shell.sf_text_sec = function() {
+	console.clear();
+	bbs.menu_dir = "";
+	bbs.text_sec();
+};
+
+shell.sf_batch_menu = function() {
+	console.clear();
+	bbs.menu_dir = "";
+	bbs.batch_menu();
+};
+
+shell.sf_temp_xfer = function() {
+	console.clear();
+	bbs.menu_dir = "";
+	bbs.temp_xfer();
 };
 
 // ── MESSAGE MENU ─────────────────────────────────────────────────────────────
 
 shell.msg_menu = {
-	file: "msg",
+	file: "spitfire/msg",
 	cls: true,
-	eval: 'bbs.menu_dir="spitfire"; bbs.main_cmds++',
+	eval: 'bbs.main_cmds++',
 	node_action: NODE_MAIN,
 	prompt: sf_prompt("Message"),
 	num_input: shell.get_sub_num,
 	slash_num_input: shell.get_grp_num,
 	command: {
-		'N':  { eval: 'bbs.scan_subs(SCAN_NEW)',                   // New Message Scan
+		'N':  { eval: 'bbs.scan_subs(SCAN_NEW)',
 		        msg: '\r\n\x01c\x01hNew Message Scan\x01n\r\n' },
-		'L':  { eval: 'bbs.list_msgs()' },                         // List/View Messages
-		'R':  { eval: 'bbs.scan_msgs()' },                         // Read Message Prompt
-		'J':  { eval: 'select_msg_area()' },                       // Jump to new MSG Area
-		'K':  { eval: 'sf_qwk_sec()' },                           // QWK Menu
-		'E':  { eval: 'sf_email_sec()' },                         // E-Mail/NetMail Menu
-		'A':  { eval: 'bbs.auto_msg()' },                          // Logon Auto-Message
-		'P':  { eval: 'bbs.post_msg()' },                          // Post Message
-		'/P': { exec: 'postpoll.js' },                             // Poll Question
-		'V':  { exec: 'scanpolls.js' },                            // View/Vote-in Polls
-		'F':  { eval: 'bbs.scan_subs(SCAN_FIND)',                  // Find text in Msg
+		'L':  { eval: 'bbs.list_msgs()' },
+		'R':  { eval: 'bbs.scan_msgs()' },
+		'J':  { eval: 'select_msg_area()' },
+		'K':  { eval: 'sf_qwk_sec()' },
+		'E':  { eval: 'sf_email_sec()' },
+		'A':  { eval: 'bbs.auto_msg()' },
+		'P':  { eval: 'bbs.post_msg()' },
+		'/P': { exec: 'postpoll.js' },
+		'V':  { exec: 'scanpolls.js' },
+		'F':  { eval: 'bbs.scan_subs(SCAN_FIND)',
 		        msg: '\r\n\x01c\x01hFind Text in Messages\x01n\r\n' },
-		'S':  { eval: 'bbs.scan_subs(SCAN_TOYOU)',                 // Scan for Msgs to You
+		'S':  { eval: 'bbs.scan_subs(SCAN_TOYOU)',
 		        msg: '\r\n\x01c\x01hScan for Messages Posted to You\x01n\r\n' },
-		'*':  { eval: 'show_subs(bbs.curgrp)' },                   // List Sub-Boards
-		'/*': { eval: 'show_grps()' },                             // List Groups
-		'O':  { eval: 'logoff(false)' },                           // Log Off
-		'/O': { eval: 'logoff(true)' },                            // Quick Log Off
+		'*':  { eval: 'show_subs(bbs.curgrp)' },
+		'/*': { eval: 'show_grps()' },
+		'O':  { eval: 'logoff(false)' },
+		'/O': { eval: 'logoff(true)' },
 		'!':  { eval: 'bbs.menu("sysmain")',
 		        ars: 'SYSOP or EXEMPT Q or I or N' },
 	},
 	nav: {
 		'\r': { },
-		'Q':  { eval: 'menu = main_menu' },                        // Quit to Main
+		'Q':  { eval: 'menu = main_menu' },
 		'>':  { eval: 'sub_up()' },
 		'}':  { eval: 'sub_up()' },
 		')':  { eval: 'sub_up()' },
@@ -155,30 +151,30 @@ shell.msg_menu.nav[KEY_LEFT]  = { eval: 'grp_down()' };
 // ── MAIN MENU ────────────────────────────────────────────────────────────────
 
 shell.main_menu = {
-	file: "main",
+	file: "spitfire/main",
 	cls: true,
-	eval: 'bbs.menu_dir="spitfire"; bbs.main_cmds++',
+	eval: 'bbs.main_cmds++',
 	node_action: NODE_MAIN,
 	prompt: sf_prompt("Main"),
 	num_input: shell.get_sub_num,
 	slash_num_input: shell.get_grp_num,
 	command: {
-		'M':  { eval: 'menu = msg_menu' },                          // Message Section
-		'F':  { eval: 'enter_file_section(); menu = file_menu' },   // File Section
-		'D':  { eval: 'sf_xtrn_sec()' },                          // Door Section
-		'B':  { exec: 'bullseye.js' },                              // Bulletins
-		'G':  { eval: 'sf_text_sec()' },                          // Text File Section
-		'C':  { eval: 'sf_chat_sec()' },                           // Chat Menu
-		'U':  { eval: 'list_users()' },                            // User List
-		'Y':  { eval: 'bbs.menu_dir=""; bbs.user_config(); exit()' }, // Your Config
-		'I':  { eval: 'bbs.menu_dir=""; main_info(); bbs.menu_dir="spitfire"' }, // Information
-		'/A': { exec: 'avatar_chooser.js',                         // Change your Avatar
+		'M':  { eval: 'menu = msg_menu' },
+		'F':  { eval: 'enter_file_section(); menu = file_menu' },
+		'D':  { eval: 'sf_xtrn_sec()' },
+		'B':  { exec: 'bullseye.js' },
+		'G':  { eval: 'sf_text_sec()' },
+		'C':  { eval: 'sf_chat_sec()' },
+		'U':  { eval: 'list_users()' },
+		'Y':  { eval: 'bbs.user_config(); exit()' },
+		'I':  { eval: 'bbs.menu_dir=""; main_info(); bbs.menu_dir=""' },
+		'/A': { exec: 'avatar_chooser.js',
 		        ars: 'ANSI and not GUEST',
 		        err: '\r\n\x01c\x01hSorry, only regular users with ANSI terminals can do that.\x01n\r\n' },
-		'/L': { eval: 'bbs.list_nodes()' },                        // Node Activity
-		'O':  { eval: 'logoff(false)' },                           // Logoff BBS
-		'/O': { eval: 'logoff(true)' },                            // Quick Logoff
-		'!':  { eval: 'bbs.menu("sysmain")',                       // Sysop menu
+		'/L': { eval: 'bbs.list_nodes()' },
+		'O':  { eval: 'logoff(false)' },
+		'/O': { eval: 'logoff(true)' },
+		'!':  { eval: 'bbs.menu("sysmain")',
 		        ars: 'SYSOP or EXEMPT Q or I or N' },
 	},
 	nav: {
@@ -208,58 +204,58 @@ if (typeof bbs.email_sec != 'function')
 // ── FILE MENU ────────────────────────────────────────────────────────────────
 
 shell.file_menu = {
-	file: "file",
+	file: "spitfire/file",
 	cls: true,
-	eval: 'bbs.menu_dir="spitfire"; bbs.file_cmds++',
+	eval: 'bbs.file_cmds++',
 	node_action: NODE_XFER,
 	prompt: sf_prompt("File"),
 	num_input: shell.get_dir_num,
 	slash_num_input: shell.get_lib_num,
 	command: {
-		'L':  { eval: 'list_files()' },                            // List files in Dir
-		'J':  { eval: 'select_file_area()' },                      // Jump to New File Area
-		'N':  { eval: 'bbs.scan_dirs(FL_ULTIME)',                  // New File Scan
+		'L':  { eval: 'list_files()' },
+		'J':  { eval: 'select_file_area()' },
+		'N':  { eval: 'bbs.scan_dirs(FL_ULTIME)',
 		        msg: '\r\n\x01c\x01hNew File Scan\x01n\r\n' },
 		'/N': { eval: 'bbs.scan_dirs(FL_ULTIME, true)' },
-		'*':  { eval: 'show_dirs(bbs.curlib)' },                   // List Directories
-		'/*': { eval: 'show_libs()' },                             // List Libraries
-		'E':  { eval: 'view_file_info(FI_INFO)',                   // Extended File Info
+		'*':  { eval: 'show_dirs(bbs.curlib)' },
+		'/*': { eval: 'show_libs()' },
+		'E':  { eval: 'view_file_info(FI_INFO)',
 		        msg: '\r\n\x01c\x01hList Extended File Information\x01n\r\n' },
-		'F':  { eval: 'bbs.scan_dirs(FL_FINDDESC)',                // Find Text in Descrip
+		'F':  { eval: 'bbs.scan_dirs(FL_FINDDESC)',
 		        msg: '\r\n\x01c\x01hFind Text in File Descriptions\x01n\r\n' },
 		'/F': { eval: 'bbs.scan_dirs(FL_FINDDESC, true)' },
-		'S':  { eval: 'bbs.scan_dirs(FL_NO_HDR)',                  // Search for Filename
+		'S':  { eval: 'bbs.scan_dirs(FL_NO_HDR)',
 		        msg: '\r\n\x01c\x01hSearch for Filename(s)\x01n\r\n' },
 		'/S': { eval: 'bbs.scan_dirs(FL_NO_HDR, true)' },
-		'D':  { eval: 'download_files()',                          // Download a File
+		'D':  { eval: 'download_files()',
 		        msg: '\r\n\x01c\x01hDownload File(s)\x01n\r\n',
 		        ars: 'REST NOT D' },
-		'/D': { eval: 'download_user_files()',                     // Download from User
+		'/D': { eval: 'download_user_files()',
 		        msg: '\r\n\x01c\x01hDownload File(s) from User(s)\x01n\r\n',
 		        ars: 'REST NOT D' },
-		'U':  { eval: 'upload_file()',                             // Upload a File
+		'U':  { eval: 'upload_file()',
 		        msg: '\r\n\x01c\x01hUpload File\x01n\r\n' },
-		'/U': { eval: 'upload_user_file()',                        // Upload to User
+		'/U': { eval: 'upload_user_file()',
 		        msg: '\r\n\x01c\x01hUpload File to User\x01n\r\n' },
-		'B':  { eval: 'sf_batch_menu()' },                        // Batch/Bi-Dir Xfers
-		'Z':  { eval: 'upload_sysop_file()',                       // Upload to Sysop
+		'B':  { eval: 'sf_batch_menu()' },
+		'Z':  { eval: 'upload_sysop_file()',
 		        msg: '\r\n\x01c\x01hUpload File to Sysop\x01n\r\n' },
-		'T':  { eval: 'sf_temp_xfer()' },                        // Temp Dir/Archive cmds
-		'R':  { eval: 'view_file_info(FI_REMOVE)',                 // Remove/Edit File
+		'T':  { eval: 'sf_temp_xfer()' },
+		'R':  { eval: 'view_file_info(FI_REMOVE)',
 		        msg: '\r\n\x01c\x01hRemove/Edit File(s)\x01n\r\n' },
-		'&':  { eval: 'bbs.menu_dir=""; js.exec(system.exec_dir+"filescancfg.js",{}); bbs.menu_dir="spitfire"' }, // File Scan Config
-		'I':  { eval: 'bbs.menu_dir=""; file_info(); bbs.menu_dir="spitfire"' }, // Information
-		'V':  { eval: 'view_files()',                              // View File Contents
+		'&':  { eval: 'bbs.menu_dir=""; js.exec(system.exec_dir+"filescancfg.js",{}); bbs.menu_dir=""' },
+		'I':  { eval: 'bbs.menu_dir=""; file_info(); bbs.menu_dir=""' },
+		'V':  { eval: 'view_files()',
 		        msg: '\r\n\x01c\x01hView File(s)\x01n\r\n' },
-		'C':  { eval: 'sf_chat_sec()' },                           // Chat Menu
-		'/L': { eval: 'bbs.list_nodes()' },                        // Node Activity
-		'O':  { eval: 'logoff(false)' },                           // Logoff BBS
-		'/O': { eval: 'logoff(true)' },                            // Quick Logoff
+		'C':  { eval: 'sf_chat_sec()' },
+		'/L': { eval: 'bbs.list_nodes()' },
+		'O':  { eval: 'logoff(false)' },
+		'/O': { eval: 'logoff(true)' },
 		'!':  { eval: 'bbs.menu("sysxfer")', ars: 'SYSOP' },
 	},
 	nav: {
 		'\r': { },
-		'Q':  { eval: 'menu = main_menu' },                        // Quit to Main Menu
+		'Q':  { eval: 'menu = main_menu' },
 		'>':  { eval: 'dir_up()' },
 		'}':  { eval: 'dir_up()' },
 		')':  { eval: 'dir_up()' },

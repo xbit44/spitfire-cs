@@ -2,10 +2,10 @@
 
 A Spitfire BBS-inspired command shell for [Synchronet BBS](https://synchro.net), recreating the classic Spitfire look and feel with authentic SF-styled ANSI menus while using the full Synchronet command set underneath.
 
-![Spitfire Shell Screenshot](spitfire-cc.png)
+![Spitfire Shell Screenshot](spitfire-ss.png)
 
-> ⚠️ **Work in Progress — Pre-release**  
-> This shell is functional but still under active development. Some sub-menu displays (multchat, logoff) have known issues pending resolution. Recommended for sysop testing only at this time. Feedback and bug reports welcome!
+> ⚠️ **Pre-release — Sysop Testing**  
+> This shell is functional and actively being tested. Feedback and bug reports welcome!
 
 ## Features
 
@@ -72,6 +72,7 @@ Users can select the Spitfire shell from their user config (`Y` key), or you can
 | `chat.msg` | `sbbs/text/menu/spitfire/` | Chat menu |
 | `e-mail.msg` | `sbbs/text/menu/spitfire/` | E-Mail/NetMail menu |
 | `qwk.msg` | `sbbs/text/menu/spitfire/` | QWK menu |
+| `multchat.msg` | `sbbs/text/menu/spitfire/` | Multinode chat menu |
 
 ## Version History
 

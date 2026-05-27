@@ -1,5 +1,5 @@
 ========================================
- Spitfire Shell v1.2a for Synchronet BBS
+ Spitfire Shell v1.3 for Synchronet BBS
  Authored by Xbit / x-bit.org
  Co-authored with Claude Sonnet 4.6
 ========================================
@@ -15,15 +15,20 @@ Sections: Main / Message / File / Chat / E-Mail/NetMail / QWK
 
 Files Included
 --------------
-  spitfire.js         Command shell (goes in exec/)
-  main.msg            Main menu display
-  msg.msg             Message menu display
-  file.msg            File menu display
-  chat.msg            Chat menu display
-  e-mail.msg          E-Mail/NetMail menu display
-  qwk.msg             QWK menu display
-  install.txt         This file
-  file_id.diz         Package description
+  exec/
+    spitfire.js         Command shell
+
+  text/menu/spitfire/
+    main.msg            Main menu display
+    msg.msg             Message menu display
+    file.msg            File menu display
+    chat.msg            Chat menu display
+    multchat.msg        Multinode chat display
+    e-mail.msg          E-Mail/NetMail menu display
+    qwk.msg             QWK menu display
+
+  install.txt           This file
+  file_id.diz           Package description
 
 
 Installation - Windows
@@ -58,18 +63,22 @@ Notes
   - The Bulletins option (B) requires bullseye.js to be
     present in your exec/ directory.
 
-  - All sections including Chat, E-Mail, and QWK display
-    Spitfire-styled menus from the spitfire/ folder.
+  - All sections including Chat, E-Mail, QWK, and Multinode
+    Chat display Spitfire-styled menus from the spitfire/ folder.
+
+  - Synchronet v3.22a+ will automatically fall back to the
+    default text/menu/ directory for any menu files not found
+    in the spitfire/ subfolder.
 
 
 Version History
 ---------------
-  v1.2a 2026-05-27  Bug fixes: menu_dir handling for all sections
-                    (Doors, Text Files, Batch, Temp Xfer, Info,
-                    File Scan Config, Main Info). Fixed logoff
-                    returning to default shell. Fixed e-mail.msg
-                    not found error.
-  v1.1  2026-05-26  Rewrote using bbs.menu_dir per Digital Man
-                    feedback. Removed custom section loops.
-                    All sections now display SF menus.
+  v1.3  2026-05-27  Added multchat.msg for Spitfire-styled multinode
+                    chat display. Fixed chat section menu_dir handling
+                    per Digital Man guidance. Correct bbs.menu_dir
+                    pattern implemented throughout.
+  v1.2a 2026-05-27  Bug fixes: menu_dir handling for all sections.
+                    Fixed logoff and various section display issues.
+  v1.1  2026-05-26  Rewrote using bbs.menu_dir per Digital Man feedback.
+                    All sections now display SF menus including QWK.
   v1.0  2026-05-26  Initial release
