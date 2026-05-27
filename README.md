@@ -75,6 +75,9 @@ Users can select the Spitfire shell from their user config (`Y` key), or you can
 
 | Version | Date | Notes |
 |---|---|---|
+| 1.4 | 2026-05-27 | Code review cleanup per Digital Man (LGTM). Removed unnecessary wrappers and menu_dir manipulations. ASCII-only comments. |
+| 1.3 | 2026-05-27 | Added multchat.msg for Spitfire-styled multinode chat. Fixed chat section menu_dir handling. |
+| 1.2a | 2026-05-27 | Bug fixes: menu_dir handling for all sections. Fixed logoff and various section display issues. |
 | 1.1 | 2026-05-26 | Rewrote using bbs.menu_dir per Digital Man feedback. All sections now display SF menus including QWK. |
 | 1.0 | 2026-05-26 | Initial release |
 

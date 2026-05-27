@@ -33,7 +33,7 @@ shell.help_key = '?';
 // Time display: used if unlimited time exemption, remaining otherwise
 const time_code = user.security.exemptions & UFLAG_T ? "@TUSED@" : "@TLEFT@";
 
-// ── Prompt builder ───────────────────────────────────────────────────────────
+// Prompt builder -
 
 function sf_prompt(section) {
 	return "\x01n\x01c\xfe \x01b\x01h" + section
@@ -41,12 +41,10 @@ function sf_prompt(section) {
 		+ " \x01n\x01c[\x01h@GN@\x01n\x01c]: \x01n";
 }
 
-// ── Section wrappers ─────────────────────────────────────────────────────────
+// Section wrappers -
 // Per Digital Man: set/reset bbs.menu_dir only around captured section calls
 // that have their own custom menu files in the spitfire/ subfolder.
 // Direct bbs.menu() calls use the full path (e.g. "spitfire/main") instead.
-// bbs.chat_sec() is called without menu_dir so its internal menus (multchat
-// etc.) resolve from the default text/menu/ location.
 
 shell.sf_chat_sec = function() {
 	console.clear();
@@ -58,7 +56,10 @@ shell.sf_chat_sec = function() {
 shell.sf_email_sec = function() {
 	console.clear();
 	bbs.menu_dir = "spitfire";
-	bbs.email_sec();
+	if (typeof bbs.email_sec == 'function')
+		bbs.email_sec();
+	else
+		js.exec(system.exec_dir + "email_sec.js", {});
 	bbs.menu_dir = "";
 };
 
@@ -69,31 +70,7 @@ shell.sf_qwk_sec = function() {
 	bbs.menu_dir = "";
 };
 
-shell.sf_xtrn_sec = function() {
-	console.clear();
-	bbs.menu_dir = "";
-	bbs.xtrn_sec();
-};
-
-shell.sf_text_sec = function() {
-	console.clear();
-	bbs.menu_dir = "";
-	bbs.text_sec();
-};
-
-shell.sf_batch_menu = function() {
-	console.clear();
-	bbs.menu_dir = "";
-	bbs.batch_menu();
-};
-
-shell.sf_temp_xfer = function() {
-	console.clear();
-	bbs.menu_dir = "";
-	bbs.temp_xfer();
-};
-
-// ── MESSAGE MENU ─────────────────────────────────────────────────────────────
+// MESSAGE MENU -
 
 shell.msg_menu = {
 	file: "spitfire/msg",
@@ -148,7 +125,7 @@ shell.msg_menu.nav[KEY_DOWN]  = { eval: 'sub_down()' };
 shell.msg_menu.nav[KEY_RIGHT] = { eval: 'grp_up()' };
 shell.msg_menu.nav[KEY_LEFT]  = { eval: 'grp_down()' };
 
-// ── MAIN MENU ────────────────────────────────────────────────────────────────
+// MAIN MENU -
 
 shell.main_menu = {
 	file: "spitfire/main",
@@ -161,13 +138,13 @@ shell.main_menu = {
 	command: {
 		'M':  { eval: 'menu = msg_menu' },
 		'F':  { eval: 'enter_file_section(); menu = file_menu' },
-		'D':  { eval: 'sf_xtrn_sec()' },
+		'D':  { eval: 'bbs.xtrn_sec()' },
 		'B':  { exec: 'bullseye.js' },
-		'G':  { eval: 'sf_text_sec()' },
+		'G':  { eval: 'bbs.text_sec()' },
 		'C':  { eval: 'sf_chat_sec()' },
 		'U':  { eval: 'list_users()' },
 		'Y':  { eval: 'bbs.user_config(); exit()' },
-		'I':  { eval: 'bbs.menu_dir=""; main_info(); bbs.menu_dir=""' },
+		'I':  { eval: 'main_info()' },
 		'/A': { exec: 'avatar_chooser.js',
 		        ars: 'ANSI and not GUEST',
 		        err: '\r\n\x01c\x01hSorry, only regular users with ANSI terminals can do that.\x01n\r\n' },
@@ -198,10 +175,7 @@ shell.main_menu.nav[KEY_DOWN]  = { eval: 'sub_down()' };
 shell.main_menu.nav[KEY_RIGHT] = { eval: 'grp_up()' };
 shell.main_menu.nav[KEY_LEFT]  = { eval: 'grp_down()' };
 
-if (typeof bbs.email_sec != 'function')
-	shell.main_menu.command['E'] = { exec: 'email_sec.js' };
-
-// ── FILE MENU ────────────────────────────────────────────────────────────────
+// FILE MENU -
 
 shell.file_menu = {
 	file: "spitfire/file",
@@ -237,14 +211,14 @@ shell.file_menu = {
 		        msg: '\r\n\x01c\x01hUpload File\x01n\r\n' },
 		'/U': { eval: 'upload_user_file()',
 		        msg: '\r\n\x01c\x01hUpload File to User\x01n\r\n' },
-		'B':  { eval: 'sf_batch_menu()' },
+		'B':  { eval: 'bbs.batch_menu()' },
 		'Z':  { eval: 'upload_sysop_file()',
 		        msg: '\r\n\x01c\x01hUpload File to Sysop\x01n\r\n' },
-		'T':  { eval: 'sf_temp_xfer()' },
+		'T':  { eval: 'bbs.temp_xfer()' },
 		'R':  { eval: 'view_file_info(FI_REMOVE)',
 		        msg: '\r\n\x01c\x01hRemove/Edit File(s)\x01n\r\n' },
-		'&':  { eval: 'bbs.menu_dir=""; js.exec(system.exec_dir+"filescancfg.js",{}); bbs.menu_dir=""' },
-		'I':  { eval: 'bbs.menu_dir=""; file_info(); bbs.menu_dir=""' },
+		'&':  { exec: 'filescancfg.js' },
+		'I':  { eval: 'file_info()' },
 		'V':  { eval: 'view_files()',
 		        msg: '\r\n\x01c\x01hView File(s)\x01n\r\n' },
 		'C':  { eval: 'sf_chat_sec()' },
@@ -275,7 +249,7 @@ shell.file_menu.nav[KEY_DOWN]  = { eval: 'dir_down()' };
 shell.file_menu.nav[KEY_RIGHT] = { eval: 'lib_up()' };
 shell.file_menu.nav[KEY_LEFT]  = { eval: 'lib_down()' };
 
-// ── Boot the shell ───────────────────────────────────────────────────────────
+// Boot the shell -
 
 shell.menu = shell.main_menu;
 shell.menu_loop();
