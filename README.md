@@ -4,9 +4,6 @@ A Spitfire BBS-inspired command shell for [Synchronet BBS](https://synchro.net),
 
 ![Spitfire Shell Screenshot](spitfire-ss.png)
 
-> ⚠️ **Pre-release — Sysop Testing**  
-> This shell is functional and actively being tested. Feedback and bug reports welcome!
-
 ## Features
 
 - Spitfire BBS-styled ANSI menus for all sections including Chat, E-Mail, and QWK
