@@ -35,24 +35,24 @@ A Spitfire BBS-inspired command shell for [Synchronet BBS](https://synchro.net),
 
 ### Windows
 
+0. Check you have the latest version: https://github.com/xbit44/spitfire-cs
 1. Copy `spitfire.js` to `\sbbs\exec\`
 2. Create folder `\sbbs\text\menu\spitfire\`
 3. Copy all `.msg` files to `\sbbs\text\menu\spitfire\`
 4. In SCFG → Command Shells → Add new entry:
    - Name: `Spitfire`
    - Internal Code: `SPITFIRE`
-5. Recycle the Terminal Server or restart Synchronet
 
 ### Linux
 
+0. Check you have the latest version: https://github.com/xbit44/spitfire-cs
 1. Copy `spitfire.js` to `/sbbs/exec/`
 2. Create folder `/sbbs/text/menu/spitfire/`
 3. Copy all `.msg` files to `/sbbs/text/menu/spitfire/`
    *(filenames are already lowercase)*
 4. In SCFG → Command Shells → Add new entry:
-   - Name: `Spitfire`
+   - Name: `Spitfire Clone`
    - Internal Code: `SPITFIRE`
-5. Recycle the Terminal Server or restart Synchronet
 
 ### Assigning the Shell
 
@@ -88,12 +88,10 @@ Co-authored with Claude Sonnet 4.6
 Tested on X-Bit BBS and Unix-Bit BBS  
 Thanks to Digital Man for `bbs.menu_dir` guidance
 
-Inspired by the original Spitfire BBS by Buffalo Creek Software.
-
-A big thank you to the sysops and BBS community members who have helped test and provide feedback during development — your input is what makes this better!
+Inspired by the original Spitfire BBS by Buffalo Creek Software (https://x-bit.org/spitfire)
 
 ## See Also
 
 - [Synchronet BBS](https://synchro.net)
 - [Synchronet Wiki - Command Shells](https://wiki.synchro.net/custom:command_shell)
-- [x-bit.org BBS Network](https://x-bit.org/info)
+- [X-Bit BBS](https://x-bit.org/info)
