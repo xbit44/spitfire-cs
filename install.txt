@@ -1,6 +1,6 @@
 ========================================
- Spitfire Shell v1.4 for Synchronet BBS
- Authored by Xbit / x-bit.org 
+ Spitfire Shell v1.4b for Synchronet BBS
+ Authored by Xbit / x-bit.org
  Co-authored with Claude Sonnet 4.6
 ========================================
 
@@ -26,6 +26,8 @@ Files Included
     multchat.msg        Multinode chat display
     e-mail.msg          E-Mail/NetMail menu display
     qwk.msg             QWK menu display
+    msglist.asc         Message list help display
+    msgview.asc         Message view help display
 
   install.txt           This file
   file_id.diz           Package description
@@ -37,10 +39,10 @@ Installation - Windows
 
   2. Create the folder \sbbs\text\menu\spitfire\
 
-  3. Copy all .msg files to \sbbs\text\menu\spitfire\
+  3. Copy all .msg and .asc files to \sbbs\text\menu\spitfire\
 
   4. In SCFG -> Command Shells -> Add new entry:
-       Name:          Spitfire
+       Name:          Spitfire Clone
        Internal Code: SPITFIRE
 
 
@@ -50,11 +52,11 @@ Installation - Linux
 
   2. Create the folder /sbbs/text/menu/spitfire/
 
-  3. Copy all .msg files to /sbbs/text/menu/spitfire/
+  3. Copy all .msg and .asc files to /sbbs/text/menu/spitfire/
      Note: filenames must be lowercase (they already are).
 
   4. In SCFG -> Command Shells -> Add new entry:
-       Name:          Spitfire
+       Name:          Spitfire Clone
        Internal Code: SPITFIRE
 
 
@@ -73,6 +75,8 @@ Notes
 
 Version History
 ---------------
+  v1.4b 2026-05-30  Added msglist.asc and msgview.asc for E-Mail
+                    section compatibility.
   v1.4  2026-05-27  Code review cleanup per Digital Man.
                     Removed unnecessary bbs.menu_dir manipulations.
                     Moved email backwards-compat shim into sf_email_sec.
